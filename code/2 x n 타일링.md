@@ -21,15 +21,15 @@
 ```java
 class Solution {
     public int solution(int n) {
-		int temp1 = 1;
-		int temp2 = 2;
-		int temp3 = 0;
-		for(int i = 3; i <= n; i++)
-		{
-			temp3 = (temp1+temp2) %1000000007;
-			temp1 = temp2;
-			temp2 = temp3;
-		}
+	int temp1 = 1;
+	int temp2 = 2;
+	int temp3 = 0;
+	for(int i = 3; i <= n; i++)
+	{
+		temp3 = (temp1+temp2) %1000000007;
+		temp1 = temp2;
+		temp2 = temp3;
+	}
         return temp3;
     }
 }
