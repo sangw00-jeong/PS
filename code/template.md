@@ -1,4 +1,4 @@
-### 문제 제목
+### 문제
 
 - [BOJ XXX번 GoldX 문제 제목](https://www.acmicpc.net/problem/문제번호)
 - [programmers LevelX 문제 제목]()
