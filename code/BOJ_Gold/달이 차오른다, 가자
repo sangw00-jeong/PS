@@ -1,0 +1,112 @@
+### 문제
+
+- [BOJ 1194번 Gold1 달이 차오른다, 가자.](https://www.acmicpc.net/problem/1194)
+
+### 풀이 과정
+
+BFS와 비트마스킹을 이용해 풀었다. 키를 획득해서 현재 가지고 있는 키의 정보를 저장하기 위해 비트마스킹을 이용해 저장하였다.
+
+### 코드
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+public class Main {
+    static class Coordinates {
+        final private int x;
+        final private int y;
+        final private int cost;
+        public Coordinates(int x, int y, int cost) {
+            this.x = x;
+            this.y = y;
+            this.cost = cost;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public int getCost() {
+            return cost;
+        }
+    }
+    static int [] dx = {0, 0, -1, 1};
+    static int [] dy = {-1, 1, 0, 0};
+    static char [][] maze;
+    static boolean [][][] visit;
+    static LinkedList<Coordinates> list = new LinkedList<>();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        maze = new char[N][M];
+        visit = new boolean[N][M][1 << 6];
+        for(int i = 0; i < N; i++) {
+            maze[i] = br.readLine().toCharArray();
+            for(int j = 0; j < maze[i].length; j++) {
+                if(maze[i][j] == '0') {
+                    list.add(new Coordinates(j, i, 0));
+                    visit[i][j][0] = true;
+                }
+            }
+
+        }
+        System.out.println(BFS());
+    }
+
+    public static int BFS() {
+        LinkedList<Integer> keys = new LinkedList<>();
+        keys.add(0);
+        int x, y, cost, tempX, tempY, key, tempKey;
+        Coordinates cur;
+        while(!list.isEmpty()) {
+            key = keys.removeFirst();
+            cur = list.removeFirst();
+            x = cur.getX();
+            y = cur.getY();
+            cost = cur.getCost();
+            for(int i = 0; i < dx.length; i++) {
+                tempX = x + dx[i];
+                tempY = y + dy[i];
+                if(check(tempX, tempY, key)) {
+                    if(maze[tempY][tempX] == '.' || maze[tempY][tempX] == '0') {
+                        visit[tempY][tempX][key] = true;
+                        list.add(new Coordinates(tempX, tempY, cost+1));
+                        keys.add(key);
+                    } else if(maze[tempY][tempX] >= 'a' && maze[tempY][tempX] <= 'f') {
+                        int length = maze[tempY][tempX] - 'a';
+                        tempKey = key | (1 << length);
+                        visit[tempY][tempX][tempKey] = true;
+                        list.add(new Coordinates(tempX, tempY, cost+1));
+                        keys.add(tempKey);
+                    } else if(maze[tempY][tempX] >= 'A' && maze[tempY][tempX] <= 'F') {
+                        int length = maze[tempY][tempX]-'A';
+                        if((1 << length & key) > 0) {
+                            list.add(new Coordinates(tempX, tempY, cost+1));
+                            keys.add(key);
+                            visit[tempY][tempX][key] = true;
+                        }
+                    } else if(maze[tempY][tempX] == '1'){
+                        return cost+1;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static boolean check(int x, int y, int key) {
+        return x > -1 && y > -1 && y < maze.length && x < maze[y].length  && maze[y][x] != '#' && !visit[y][x][key];
+    }
+}
+```
+
